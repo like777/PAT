@@ -1,48 +1,44 @@
-#include<cstdio>
-#include<string.h>
+#include <iostream>
+#include <string>
 
-int main() {
-	char s[100001];
-	bool p[100000] = {false};
-	bool a[100000] = {false};
-	bool t[100000] = {false};
-	gets(s);
-	int sum = 0;
-	for (int i = 0; i < strlen(s); i++)
+using namespace std;
+
+int main()
+{
+	string s;
+	int tempA = -1;
+	int numberP = 0;
+	int numberT = 0;
+	long long sum = 0;
+	cin >> s;
+
+	for (int i = 0, a = 0; i < s.size(); i++)
+	{
+		if (!a && s[i] == 'A')
+		{
+			a = 1;
+			tempA = i;
+		}
+		if (!a && s[i] == 'P')
+			++numberP;
+
+		else if (a && s[i] == 'T')
+			++numberT;
+	}
+
+	sum += numberP * numberT;
+	for (int i = tempA + 1; i < s.size(); i++)
 	{
 		if (s[i] == 'P')
+			++numberP;
+		else if (s[i] == 'T')
+			--numberT;
+		else
 		{
-			p[i] = true;
-		}
-		else if (s[i] == 'A')
-		{
-			a[i] = true;
-		}else
-		{
-			t[i] = true;
+			sum += (long long)numberP * (long long)numberT;
 		}
 	}
+	cout << sum % 1000000007;
 
-	for (int i = 0; i < strlen(s); i++)
-	{
-		if (p[i])
-		{
-			for (int j = i + 1; j < strlen(s); j++)
-			{
-				if (a[j])
-				{
-					for (int k = j + 1; k < strlen(s); k++)
-					{
-						if (t[k])
-						{
-							sum = (sum + 1) % 10000000007;
-						}
-					}
-				}
-			}
-		}
-
-	}
-	printf("%d",sum);
 
 }
