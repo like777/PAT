@@ -1,45 +1,47 @@
-#include <cstdio>
 #include <vector>
-#include <string>
+#include <cstdio>
+
 using namespace std;
 
-int main() {
+int main()
+{
 	int d, n;
 	scanf("%d%d", &d, &n);
 
-	//vector<vector<int>> s;
-	//vector<int> t;
-	//vector<int> temp(10);
+	vector<int> bef;
+	vector<int> aft;
 
-	int s[40][20];
-	int temp[10];
-
-	s[0][0] = d;
-	s[0][1] = -1;
-
+	bef.push_back(d);
 	for (int i = 1; i < n; i++)
 	{
-		memset(&temp,0,10);
-		for (int j = 0; s[i - 1][j] != -1; j++)
+		int flag = 10;
+		int sum= 0;
+		for (int j = 0; j < bef.size(); j++)
 		{
-			++ temp[s[i - 1][j]];
-		}
-		s[i][0] = d;
-		s[i][1] = temp[s[i - 1][d]];
-		int k = 2;
-		for (int j = 0; j < 10; j++)
-		{
-			if (j == d)
+			if (bef[j] != flag)
 			{
-				continue;
-			}else
+				if (sum != 0)
+				{
+					aft.push_back(sum);
+					sum = 0;
+				}
+				aft.push_back(bef[j]);
+				flag = bef[j];
+			}
+			++ sum;
+			if (j == bef.size() - 1)
 			{
-				s[i][k] = j;
-				++k;
-				s[i][k] = temp[j];
-				++k;
+				aft.push_back(sum);
+				sum = 0;
 			}
 		}
-		s[i][k] = -1;
+		bef = aft;
+		aft.clear();
 	}
+	for (int i = 0; i < bef.size(); i++)
+	{
+		printf("%d", bef[i]);
+	}
+
+
 }
