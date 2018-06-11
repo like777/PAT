@@ -1,110 +1,92 @@
-#include <iostream>
+#include <cstdio>
 #include <string>
-#include <vector>
-#include <algorithm>
+#include <cstring>
 #include <map>
+#include <algorithm>
+
 using namespace std;
 
-struct Student
+void change(char str[7])
 {
-	string num;
-	double score;
-};
+	for (int i = 0; i < strlen(str); i++)
+	{
+		if (str[i] >= 'A' && str[i] <= 'Z')
+		{
+			str[i] = str[i] - 'A' + 'a';
+		}
+	}
+}
 
 struct School
 {
-	string name;
-	double score;
-	vector<Student> students;
-};
+	char schoolName[7];
+	int aScore, tScore, bScore, totalScore;
+	int studentsNum;
+}schools[100010];
 
 bool cmp(School school1, School school2)
 {
-	if (school1.score == school2.score)
+	if (school1.totalScore == school2.totalScore)
 	{
-		if (school1.students.size() == school2.students.size())
+		if (school1.studentsNum == school2.studentsNum)
 		{
-			return school1.name < school2.name;
-		}else
-		{
-			return school1.students.size() < school2.students.size();
+			return strcmp(school1.schoolName, school2.schoolName) < 0;
 		}
+		return school1.studentsNum < school2.studentsNum;
 	}
-	return school1.score > school2.score;
+	return school1.totalScore > school2.totalScore;
 }
 
-string change(string s)
+int main()
 {
-	for (int i = 0; i < s.size(); i++)
-	{
-		if (s[i] >= 'A' && s[i] <= 'Z')
-		{
-			s[i] = s[i] - 'A' + 'a';
-		}
-	}
-	return s;
-
-}
-int main() {
 	int n;
-	scanf("%d",&n);
+	scanf("%d", &n);
 
-	map<string,School> schools;
+	map<string, int> schoolNumbers;
 
+	int c = 0;
 	for (int i = 0; i < n; i++)
 	{
-		Student student;
-		string s;
-		cin >> student.num;
-		scanf("%lf", &student.score);
-		cin >> s;
-		s = change(s);
-		schools[s].name = s;
-		schools[s].score = 0;
-		schools[s].students.push_back(student);
-	}
-
-	vector<School> tSchool;
-	for (map<string, School>::iterator it = schools.begin(); it != schools.end(); ++it)
-	{
-		for (int i = 0; i < (*it).second.students.size(); i++)
+		char str1[7], str2[7];
+		//string str;
+		int grade;
+		scanf("%s %d %s", str1, &grade, str2);
+		change(str2);
+		//str = str2;
+		if (schoolNumbers[str2] == 0)
 		{
-			if ((*it).second.students[i].num[0] == 'A')
-			{
-				(*it).second.score += (*it).second.students[i].score;
-			}
-			else if ((*it).second.students[i].num[0] == 'T')
-			{
-				(*it).second.score += 1.5 * (*it).second.students[i].score;
-			}else
-			{
-				(*it).second.score += (*it).second.students[i].score / 1.5;
-			}
+			schoolNumbers[str2] = ++c;
 		}
-		(*it).second.score = (int)(*it).second.score;
-		tSchool.push_back((*it).second);
+		strcpy(schools[schoolNumbers[str2]].schoolName , str2);
+		if (str1[0] == 'A')
+			schools[schoolNumbers[str2]].aScore += grade;
+		else if (str1[0] == 'T')
+			schools[schoolNumbers[str2]].tScore += grade;
+		else
+			schools[schoolNumbers[str2]].bScore += grade;
+		++schools[schoolNumbers[str2]].studentsNum;
 	}
-	sort(tSchool.begin(), tSchool.end(), cmp);
-
-	//cout << tSchool.size() << endl;
-	printf("%d\n", tSchool.size());
-	int m = 1;
-	int score = tSchool[0].score;
-	for (int i = 0; i < tSchool.size(); i++)
+	for (int i = 1; i <= c; i++)
 	{
-		if (tSchool[i].score == score)
+		schools[i].totalScore = schools[i].aScore + schools[i].tScore * 1.5 + schools[i].bScore / 1.5;
+	}
+
+	sort(schools + 1, schools + c + 1, cmp);
+
+	int score = 0;
+	int rank = 1;
+	printf("%d\n", c);
+	for (int i = 1; i <= c; i++)
+	{
+		if (schools[i].totalScore != score)
 		{
-			printf("%d", m);;
+			printf("%d", i);
+			score = schools[i].totalScore;
+			rank = i;
 		}else
 		{
-			printf("%d", i + 1);
-			m = i + 1;
-			score = tSchool[i].score;
+			printf("%d", rank);
 		}
-		//cout << " " << tSchool[i].name << " " << (int)tSchool[i].score << " " << tSchool[i].students.size() << endl;
-		printf(" ");
-		cout << tSchool[i].name;
-		printf(" %d %d\n", (int)tSchool[i].score, tSchool[i].students.size());
+		printf(" %s %d %d\n", schools[i].schoolName, schools[i].totalScore, schools[i].studentsNum);
 	}
-	return 0;
 }
