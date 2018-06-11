@@ -1,3 +1,5 @@
+//n一定要判断是否小于1！！！
+//最后一个测试点n输入是0！！！！
 #include <iostream>
 #include <string>
 #include <vector>
@@ -13,7 +15,6 @@ int main()
 {
 	string s;
 	string temp;
-	temp.clear();
 	int k;
 	int n;
 	vector<vector<string>> parts;
@@ -22,40 +23,37 @@ int main()
 	for (int i = 0; i < emoji_part; i++)
 	{
 		getline(cin, s);
-		for (int j = 0, flag = 0; j < s.size(); j++)
+		for (int j = 0; j < s.size(); j++)
 		{
 			if (s[j] == '[')
 			{
-				temp.push_back(s[j + 1]);
-				flag = 1;
-			}
-			else if (s[j + 1] != ']' && flag == 1)
-			{
-				temp.push_back(s[j + 1]);
-			}
-			else if (s[j + 1] == ']')
-			{
+				++j;
+				while (s[j] != ']')
+				{
+					temp.push_back(s[j++]);
+				}
 				parts[i].push_back(temp);
 				temp.clear();
-				flag = 0;
 			}
 		}
 	}
 
-	s.clear();
-	bool f = false;
+
 	cin >> k;
 	for (int i = 0; i < k; i++)
 	{
-		for (int j = 0; j < emoji_size; j++)
+		s.clear();
+		bool f = false;
+		for (int j = 0, flag = 0; j < emoji_size; j++)
 		{
 			cin >> n;
-			if (n > parts[match[j]].size())
+			if (flag == 0 &&( n > parts[match[j]].size() || n < 1))
 			{
 				cout << "Are you kidding me? @\\/@";
 				f = true;
-				break;
-			}else
+				flag = 1;
+			}
+			else if (flag == 0)
 			{
 				s.insert(s.end(),parts[match[j]][n - 1].begin(), parts[match[j]][n - 1].end());
 				if (j == 0)
@@ -69,10 +67,7 @@ int main()
 			}
 		}
 		if (!f)
-		{
 			cout << s;
-			s.clear();
-		}
 		cout << endl;
 	}
 }
