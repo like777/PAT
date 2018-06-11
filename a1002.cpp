@@ -1,3 +1,5 @@
+//当n为0时不输出
+//double类型和0比较时需要比较正负两边
 #include <cstdio>
 #include <cstring>
 #include <map>
